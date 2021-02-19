@@ -17,6 +17,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import vproxybase.util.Logger;
 import vproxyx.WebSocksProxyAgent;
 
 import java.io.*;
@@ -57,8 +58,7 @@ public class Main extends MobileApplication {
             TextArea textArea = new TextArea();
             Console console = new Console(textArea);
             PrintStream ps = new PrintStream(console, true);
-            System.setOut(ps);
-            System.setErr(ps);
+            Logger.out = ps;
 
             VBox root = new VBox(20, imageView, label, textArea);
             root.setAlignment(Pos.CENTER);
