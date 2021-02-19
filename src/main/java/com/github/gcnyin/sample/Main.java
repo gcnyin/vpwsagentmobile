@@ -13,18 +13,33 @@ import javafx.geometry.Dimension2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import vproxyx.WebSocksProxyAgent;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public class Main extends MobileApplication {
     private final FloatingActionButton fab = new FloatingActionButton();
     private WebSocksProxyAgent webSocksProxyAgent;
+
+    public static class Console extends OutputStream {
+
+        private final TextArea output;
+
+        public Console(TextArea ta) {
+            this.output = ta;
+        }
+
+        @Override
+        public void write(int i) throws IOException {
+            javafx.application.Platform.runLater(() ->
+                    output.appendText(String.valueOf((char) i)));
+        }
+    }
 
     @Override
     public void init() {
@@ -39,7 +54,13 @@ public class Main extends MobileApplication {
 
             Label label = new Label("Hello, Vproxy WsAgent!");
 
-            VBox root = new VBox(20, imageView, label);
+            TextArea textArea = new TextArea();
+            Console console = new Console(textArea);
+            PrintStream ps = new PrintStream(console, true);
+            System.setOut(ps);
+            System.setErr(ps);
+
+            VBox root = new VBox(20, imageView, label, textArea);
             root.setAlignment(Pos.CENTER);
 
             View view = new View(root) {
