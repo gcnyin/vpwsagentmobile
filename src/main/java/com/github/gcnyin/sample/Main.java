@@ -104,7 +104,7 @@ public class Main extends MobileApplication {
                     "agent.cert.verify on\n" +
                     "\n" +
                     "proxy.server.list.start\n" +
-                    "websockss:kcp://boluotou.tech:443\n" +
+                    "websockss:kcp://45.76.215.74:443\n" +
                     "proxy.server.list.end\n" +
                     "\n" +
                     "proxy.domain.list.start\n" +
