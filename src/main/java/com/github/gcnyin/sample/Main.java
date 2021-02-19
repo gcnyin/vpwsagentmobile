@@ -26,6 +26,9 @@ import java.nio.charset.StandardCharsets;
 public class Main extends MobileApplication {
     private final FloatingActionButton fab = new FloatingActionButton();
     private WebSocksProxyAgent webSocksProxyAgent;
+    private final TextArea textArea = new TextArea();
+    private final Console console = new Console(textArea);
+    private final PrintStream ps = new PrintStream(console, true);
 
     public static class Console extends OutputStream {
 
@@ -55,9 +58,6 @@ public class Main extends MobileApplication {
 
             Label label = new Label("Hello, Vproxy WsAgent!");
 
-            TextArea textArea = new TextArea();
-            Console console = new Console(textArea);
-            PrintStream ps = new PrintStream(console, true);
             Logger.out = ps;
 
             VBox root = new VBox(20, imageView, label, textArea);
@@ -120,7 +120,7 @@ public class Main extends MobileApplication {
             fab.setText(MaterialDesignIcon.DONE.text);
             fab.setOnAction(this::stopWsAgent);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(ps);
             fab.setText(MaterialDesignIcon.ERROR.text);
             fab.setOnAction(this::startWsAgent);
         }
