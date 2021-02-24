@@ -27,8 +27,8 @@ public class Main extends MobileApplication {
     private final FloatingActionButton fab = new FloatingActionButton();
     private WebSocksProxyAgent webSocksProxyAgent;
     private final TextArea textArea = new TextArea();
-    private final Console console = new Console(textArea);
-    private final PrintStream ps = new PrintStream(console, true);
+    private Console console;
+    private PrintStream ps;
 
     public static class Console extends OutputStream {
 
@@ -57,6 +57,9 @@ public class Main extends MobileApplication {
             imageView.setPreserveRatio(true);
 
             Label label = new Label("Hello, Vproxy WsAgent!");
+
+            console = new Console(textArea);
+            ps = new PrintStream(console, true);
 
             Logger.out = ps;
 
