@@ -1,7 +1,9 @@
 package com.github.gcnyin.sample;
 
 import com.gluonhq.attach.display.DisplayService;
+import com.gluonhq.attach.storage.StorageService;
 import com.gluonhq.attach.util.Platform;
+import com.gluonhq.attach.util.Services;
 import com.gluonhq.charm.glisten.application.MobileApplication;
 import com.gluonhq.charm.glisten.control.AppBar;
 import com.gluonhq.charm.glisten.control.FloatingActionButton;
@@ -22,26 +24,45 @@ import vproxyx.WebSocksProxyAgent;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Main extends MobileApplication {
     private final FloatingActionButton fab = new FloatingActionButton();
     private WebSocksProxyAgent webSocksProxyAgent;
-    private final TextArea textArea = new TextArea();
     private Console console;
     private PrintStream ps;
+    private static final TextArea textArea = new TextArea();
 
     public static class Console extends OutputStream {
 
         private final TextArea output;
+        private PrintWriter printWriter;
 
         public Console(TextArea ta) {
             this.output = ta;
+            try {
+                Path path = Services.get(StorageService.class)
+                        .flatMap(StorageService::getPrivateStorage)
+                        .orElseThrow(() -> new FileNotFoundException("Could not access private storage.")).toPath();
+                File file = Files.createFile(Paths.get(path.toString(), "vpwsagent.log")).toFile();
+                printWriter = new PrintWriter(new FileWriter(file));
+            } catch (IOException e) {
+                ta.appendText(e.toString());
+            }
         }
 
         @Override
         public void write(int i) throws IOException {
             javafx.application.Platform.runLater(() ->
-                    output.appendText(String.valueOf((char) i)));
+            {
+                String text = String.valueOf((char) i);
+                output.appendText(text);
+                if (printWriter != null) {
+                    printWriter.write(text);
+                }
+            });
         }
     }
 
